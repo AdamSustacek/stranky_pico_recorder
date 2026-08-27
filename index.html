@@ -30,7 +30,7 @@
 
             <h1>PicoRecorder Hub</h1>
             <p class="description">
-              Stahněte si software pro váŠ mikrofon.
+                Kompletní systém pro záznam zvuku založený na Raspberry Pi Pico. Obsahuje kód pro mikrokontrolér Pico, sériovou komunikaci, audio engine a desktopovou aplikaci pro Linux i Windows.
             </p>
 
             <!-- Stahování balíčků (Linux a Windows) -->
@@ -75,11 +75,65 @@
                 </div>
             </div>
 
-            <!-- Místo pro návod -->
-            <div id="manual" class="manual-placeholder">
-                <div class="manual-badge">Připravuje se</div>
-                <h3>Dokumentace a návod k instalaci</h3>
-                <p>Návod k zapojení HW, nahrání kódu do Raspberry Pi Pico a spuštění softwaru dodáš později.</p>
+            <!-- Návod -->
+            <div id="manual" class="manual-section">
+                <h3>Návod k instalaci</h3>
+
+                <!-- Linux návod -->
+                <div class="manual-os">
+                    <div class="manual-os-header linux-header">
+                        <span>🐧</span>
+                        <span>Linux</span>
+                    </div>
+
+                    <div class="manual-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Otevři terminál a zadej tyto příkazy</h4>
+                            <p>Uprav cestu ke složce <code>Linux</code> podle svého uživatelského jména:</p>
+                            <pre><code>SLOŽKA="/home/TVOJE_JMÉNO/Downloads/Linux"
+
+cat > "$SLOŽKA/PicoRecorder.desktop" &lt;&lt; DESK
+[Desktop Entry]
+Name=Pico Recorder
+Exec=bash -c "cd '$SLOŽKA/app' &amp;&amp; python3 app.py"
+Icon=audio-recorder
+Terminal=false
+Type=Application
+DESK
+
+chmod +x "$SLOŽKA/PicoRecorder.desktop"</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="manual-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Povol spuštění aplikace</h4>
+                            <p>Ve správci souborů klikni <strong>pravým tlačítkem</strong> na soubor <code>PicoRecorder.desktop</code> → <strong>Allow Launching</strong>.</p>
+                            <p>Poté stačí na soubor <strong>dvakrát kliknout</strong> a aplikace se spustí.</p>
+                        </div>
+                    </div>
+
+                    <div class="manual-step">
+                        <div class="step-number">★</div>
+                        <div class="step-content">
+                            <h4>Volitelně — ikona na ploše</h4>
+                            <pre><code>cp "$SLOŽKA/PicoRecorder.desktop" ~/Desktop/</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Windows návod – připravuje se -->
+                <div class="manual-os manual-os-soon">
+                    <div class="manual-os-header win-header">
+                        <span>🪟</span>
+                        <span>Windows</span>
+                        <span class="manual-badge">Připravuje se</span>
+                    </div>
+                    <p class="soon-text">Návod pro Windows bude brzy přidán.</p>
+                </div>
+
             </div>
         </section>
     </main>
