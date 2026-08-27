@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PicoRecorder Hub - Rozcestník</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* ============================================================
+           Styly aplikace — PicoRecorder Hub
+           ============================================================ */
+
+        /* ─── CSS proměnné ─────────────────────────────────────────── */
+        :root {
+            --bg-dark:          #0b0f17;
+            --card-bg:          #111622;
+            --inner-card-bg:    #161c2a;
+            --border-subtle:    #1e2638;
+            --border-highlight: #2a354d;
+
+            --text-primary:   #f3f4f6;
+            --text-secondary: #9ca3af;
+            --text-muted:     #6b7280;
+
+            --accent:       #38bdf8;
+            --accent-hover: #7dd3fc;
+
+            --success: #4ade80;
+            --error:   #f87171;
+
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+        }
+
+        /* ─── Reset ────────────────────────────────────────────────── */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* ─── Body ─────────────────────────────────────────────────── */
+        body {
+            background-color: var(--bg-dark);
+            background-image:
+                linear-gradient(to right,  rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 32px 32px;
+            font-family: var(--font-family);
+            min-height: 100vh;
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 3rem;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ─── Navigace ─────────────────────────────────────────────── */
+        .top-nav {
+            width: 100%;
+            padding: 1.25rem 2rem;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: rgba(11, 15, 23, 0.9);
+            backdrop-filter: blur(8px);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .logo-icon { font-size: 1.4rem; }
+
+        .logo-text { color: var(--text-secondary); }
+
+        /* ─── Hlavní kontejner ─────────────────────────────────────── */
+        .main-container {
+            width: 100%;
+            max-width: 860px;
+            padding: 3rem 1.5rem;
+        }
+
+        /* ─── Karta ────────────────────────────────────────────────── */
+        .hub-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+            width: 100%;
+            min-height: 400px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7);
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* ─── Hlavička karty ───────────────────────────────────────── */
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 1rem;
+        }
+
+        .card-header h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        /* ─── Tlačítko Přidat ──────────────────────────────────────── */
+        .btn-add {
+            background: var(--accent);
+            color: #000;
+            font-weight: 600;
+            border: none;
+            padding: 0.5rem 1.1rem;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-family: var(--font-family);
+            transition: background 0.2s ease, transform 0.15s ease;
+        }
+
+        .btn-add:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        /* ─── Formulář ─────────────────────────────────────────────── */
+        .add-form {
+            background: var(--inner-card-bg);
+            border: 1px solid var(--border-highlight);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            animation: slideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .add-form.hidden { display: none; }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .form-group label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+
+        .form-group input {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-subtle);
+            color: #fff;
+            padding: 0.65rem 0.85rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            font-family: var(--font-family);
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            width: 100%;
+        }
+
+        .form-group input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+        }
+
+        .form-group input::placeholder { color: var(--text-muted); }
+
+        /* ─── Tlačítka formuláře ───────────────────────────────────── */
+        .form-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        .btn-submit {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-family: var(--font-family);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s ease, opacity 0.2s ease;
+        }
+
+        .btn-submit:hover:not(:disabled) { background: var(--accent-hover); }
+
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-cancel {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border-subtle);
+            padding: 0.6rem 1.2rem;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-family);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: border-color 0.2s ease, color 0.2s ease;
+        }
+
+        .btn-cancel:hover {
+            border-color: var(--text-muted);
+            color: var(--text-primary);
+        }
+
+        /* ─── Zpráva ve formuláři ──────────────────────────────────── */
+        .form-message {
+            font-size: 0.85rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--radius-sm);
+        }
+
+        .form-message.hidden { display: none; }
+
+        .form-message.success {
+            background: rgba(74, 222, 128, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(74, 222, 128, 0.2);
+        }
+
+        .form-message.error {
+            background: rgba(248, 113, 113, 0.1);
+            color: var(--error);
+            border: 1px solid rgba(248, 113, 113, 0.2);
+        }
+
+        /* ─── Mřížka odkazů ────────────────────────────────────────── */
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        /* ─── Karta odkazu ─────────────────────────────────────────── */
+        .hub-link-card {
+            background: var(--inner-card-bg);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 1.1rem 1.25rem;
+            text-decoration: none;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 1.1rem;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .hub-link-card:hover {
+            border-color: var(--accent);
+            background: #1c2436;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        }
+
+        .link-icon-bg {
+            font-size: 1.2rem;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .link-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+            flex-grow: 1;
+            min-width: 0;
+        }
+
+        .link-name {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .link-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .link-arrow {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        .hub-link-card:hover .link-arrow {
+            color: var(--accent);
+            transform: translateX(3px);
+        }
+
+        /* ─── Stavové texty ────────────────────────────────────────── */
+        .loading-text, .empty-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            grid-column: 1 / -1;
+            padding: 1rem 0;
+        }
+
+        /* ─── Animace ──────────────────────────────────────────────── */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ─── Responzivní styly ─────────────────────────────────────── */
+        @media (max-width: 768px) {
+            .main-container { padding: 1.5rem 1rem; }
+            .hub-card { padding: 1.5rem 1.25rem; }
+            .links-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 480px) {
+            .logo-text { display: none; }
+            .form-actions { flex-direction: column; }
+            .btn-submit, .btn-cancel { width: 100%; text-align: center; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, .hub-link-card, .link-arrow { animation: none !important; transition: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigace -->
+    <nav class="top-nav">
+        <div class="nav-logo">
+            <span class="logo-icon">🎙️</span>
+            <span class="logo-text">PicoRecorder Hub</span>
+        </div>
+    </nav>
+
+    <!-- Hlavní obsah -->
+    <main class="main-container">
+        <div class="hub-card">
+
+            <!-- Hlavička -->
+            <div class="card-header">
+                <h2>Moje Odkazy</h2>
+                <button id="toggleFormBtn" class="btn-add">+ Přidat stránku</button>
+            </div>
+
+            <!-- Formulář (skrytý ve výchozím stavu) -->
+            <div id="addLinkForm" class="add-form hidden">
+                <div class="form-group">
+                    <label for="linkTitle">Název stránky *</label>
+                    <input type="text" id="linkTitle" placeholder="např. GitHub">
+                </div>
+                <div class="form-group">
+                    <label for="linkUrl">URL adresa *</label>
+                    <input type="url" id="linkUrl" placeholder="https://github.com">
+                </div>
+                <div class="form-group">
+                    <label for="linkDesc">Popis (volitelně)</label>
+                    <input type="text" id="linkDesc" placeholder="např. Moje repozitáře">
+                </div>
+                <div class="form-actions">
+                    <button type="button" id="submitFormBtn" class="btn-submit">Uložit do Firebase</button>
+                    <button type="button" id="cancelFormBtn" class="btn-cancel">Zrušit</button>
+                </div>
+                <p id="formMessage" class="form-message hidden"></p>
+            </div>
+
+            <!-- Seznam odkazů z Firebase -->
+            <div id="linksContainer" class="links-grid">
+                <p class="loading-text">⏳ Načítám odkazy...</p>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Firebase SDK + veškerá logika aplikace -->
+    <script type="module">
+
+        // ─── Firebase importy ────────────────────────────────────────
+        import { initializeApp }   from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAnalytics }    from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+        import {
+            getFirestore,
+            collection,
+            addDoc,
+            onSnapshot,
+            query,
+            orderBy
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // ─── Firebase konfigurace ────────────────────────────────────
+        const firebaseConfig = {
+            apiKey:            "AIzaSyChLAQmzNz3tXtWWwpjwt8_P7fwdOwqvC8",
+            authDomain:        "test-stranky-94ae7.firebaseapp.com",
+            projectId:         "test-stranky-94ae7",
+            storageBucket:     "test-stranky-94ae7.firebasestorage.app",
+            messagingSenderId: "414055116493",
+            appId:             "1:414055116493:web:66409876ae639b13428384",
+            measurementId:     "G-3STPN6Z7G5"
+        };
+
+        // ─── Inicializace ────────────────────────────────────────────
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db  = getFirestore(app);
+
+        // ─── UI elementy ─────────────────────────────────────────────
+        const toggleFormBtn  = document.getElementById('toggleFormBtn');
+        const cancelFormBtn  = document.getElementById('cancelFormBtn');
+        const submitFormBtn  = document.getElementById('submitFormBtn');
+        const addLinkForm    = document.getElementById('addLinkForm');
+        const linksContainer = document.getElementById('linksContainer');
+        const formMessage    = document.getElementById('formMessage');
+        const inputTitle     = document.getElementById('linkTitle');
+        const inputUrl       = document.getElementById('linkUrl');
+        const inputDesc      = document.getElementById('linkDesc');
+
+        // ─── Pomocné funkce ──────────────────────────────────────────
+
+        // Ochrana proti XSS — escapuje nebezpečné znaky
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;");
+        }
+
+        // Zobrazí zprávu ve formuláři (success / error)
+        function showMessage(text, type) {
+            formMessage.textContent = text;
+            formMessage.className = `form-message ${type}`;
+            setTimeout(() => formMessage.className = 'form-message hidden', 4000);
+        }
+
+        // Vymaže pole formuláře
+        function clearForm() {
+            inputTitle.value = '';
+            inputUrl.value   = '';
+            inputDesc.value  = '';
+        }
+
+        // Vytvoří DOM element karty odkazu
+        function createLinkCard(data) {
+            const card = document.createElement('a');
+            card.href      = escapeHtml(data.url);
+            card.target    = '_blank';
+            card.rel       = 'noopener noreferrer';
+            card.className = 'hub-link-card';
+            card.innerHTML = `
+                <div class="link-icon-bg">🔗</div>
+                <div class="link-details">
+                    <span class="link-name">${escapeHtml(data.title)}</span>
+                    ${data.description ? `<span class="link-desc">${escapeHtml(data.description)}</span>` : ''}
+                </div>
+                <span class="link-arrow">➔</span>
+            `;
+            return card;
+        }
+
+        // ─── Zobrazení / skrytí formuláře ────────────────────────────
+        toggleFormBtn.addEventListener('click', () => {
+            const isHidden = addLinkForm.classList.toggle('hidden');
+            toggleFormBtn.textContent = isHidden ? '+ Přidat stránku' : '✕ Zavřít';
+            if (!isHidden) inputTitle.focus();
+        });
+
+        cancelFormBtn.addEventListener('click', () => {
+            addLinkForm.classList.add('hidden');
+            toggleFormBtn.textContent = '+ Přidat stránku';
+            clearForm();
+        });
+
+        // ─── Uložení odkazu do Firebase ──────────────────────────────
+        submitFormBtn.addEventListener('click', async () => {
+            const title = inputTitle.value.trim();
+            const url   = inputUrl.value.trim();
+            const desc  = inputDesc.value.trim();
+
+            // Validace
+            if (!title) {
+                showMessage('⚠️ Zadej název stránky.', 'error');
+                inputTitle.focus();
+                return;
+            }
+            try { new URL(url); } catch {
+                showMessage('⚠️ Zadej platnou URL (např. https://github.com).', 'error');
+                inputUrl.focus();
+                return;
+            }
+
+            // Zablokuj tlačítko během odesílání
+            submitFormBtn.disabled     = true;
+            submitFormBtn.textContent  = 'Ukládám...';
+
+            try {
+                await addDoc(collection(db, "links"), {
+                    title:       title,
+                    url:         url,
+                    description: desc,
+                    createdAt:   new Date()
+                });
+
+                showMessage('✅ Odkaz uložen!', 'success');
+                clearForm();
+                setTimeout(() => {
+                    addLinkForm.classList.add('hidden');
+                    toggleFormBtn.textContent = '+ Přidat stránku';
+                }, 1500);
+
+            } catch (err) {
+                console.error(err);
+                showMessage('❌ Chyba při ukládání. Zkontroluj Firestore pravidla.', 'error');
+            } finally {
+                submitFormBtn.disabled    = false;
+                submitFormBtn.textContent = 'Uložit do Firebase';
+            }
+        });
+
+        // ─── Real-time načítání odkazů z Firestore ───────────────────
+        const q = query(collection(db, "links"), orderBy("createdAt", "desc"));
+
+        onSnapshot(q, (snapshot) => {
+            linksContainer.innerHTML = '';
+
+            if (snapshot.empty) {
+                linksContainer.innerHTML = '<p class="empty-text">Zatím žádné odkazy. Klikni na „+ Přidat stránku".</p>';
+                return;
+            }
+
+            snapshot.forEach(doc => {
+                linksContainer.appendChild(createLinkCard(doc.data()));
+            });
+
+        }, (err) => {
+            console.error(err);
+            linksContainer.innerHTML = '<p class="empty-text">❌ Nepodařilo se načíst data. Zkontroluj Firestore pravidla.</p>';
+        });
+
+    </script>
+
+</body>
+</html>
