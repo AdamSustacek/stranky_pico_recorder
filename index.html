@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PicoRecorder — Audio Recording Hub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="bg-grid"></div>
+
+    <!-- Horní lišta -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="logo-icon">🎙️</span>
+                <span class="brand-name">PicoRecorder</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Hlavní karta -->
+        <section id="about" class="card">
+            <div class="status-badge">
+                <span class="pulse-dot"></span>
+                <span>PicoRecorder v1.0 Online</span>
+            </div>
+
+            <h1>PicoRecorder Hub</h1>
+            <p class="description">
+                Kompletní systém pro záznam zvuku založený na Raspberry Pi Pico. Obsahuje kód pro mikrokontrolér Pico, sériovou komunikaci, audio engine a desktopovou aplikaci pro Linux i Windows.
+            </p>
+
+            <!-- Stahování balíčků (Linux a Windows) -->
+            <div id="downloads" class="download-section">
+                <h3>Ke stažení</h3>
+                <div class="download-grid">
+                    
+                    <!-- 1. Linux Software -->
+                    <div class="download-card">
+                        <div class="dl-icon linux-icon">🐧</div>
+                        <div class="dl-info">
+                            <h4>Linux Software</h4>
+                            <p>Kompletní balíček pro Linux obsahující aplikaci, skripty a kód pro Pico.</p>
+                        </div>
+                        <a href="downloads/Linux_Software.zip" download class="btn-download btn-linux">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            Stáhnout Linux (.zip)
+                        </a>
+                    </div>
+
+                    <!-- 2. Windows Software -->
+                    <div class="download-card">
+                        <div class="dl-icon win-icon">🪟</div>
+                        <div class="dl-info">
+                            <h4>Windows Software</h4>
+                            <p>Kompletní balíček pro Windows obsahující spouštěcí soubory a kód pro Pico.</p>
+                        </div>
+                        <a href="downloads/Windows_Software.zip" download class="btn-download btn-windows">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            Stáhnout Windows (.zip)
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Místo pro návod -->
+            <div id="manual" class="manual-placeholder">
+                <div class="manual-badge">Připravuje se</div>
+                <h3>Dokumentace a návod k instalaci</h3>
+                <p>Návod k zapojení HW, nahrání kódu do Raspberry Pi Pico a spuštění softwaru dodáš později.</p>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

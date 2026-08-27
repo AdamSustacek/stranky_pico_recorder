@@ -1,0 +1,3 @@
+Do složky downloads vložte soubory:
+- Linux_Software.zip
+- Windows_Software.zip
