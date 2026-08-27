@@ -1,20 +1,22 @@
+cat > /home/claude/pico-flat/index.html << 'ENDOFFILE'
 <!DOCTYPE html>
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PicoRecorder Hub - Rozcestník</title>
+    <title>Adam's Hub</title>
 
-    <!-- Google Fonts -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔗</text></svg>">
+    <meta property="og:title" content="Adam's Hub">
+    <meta property="og:description" content="Rozcestník odkazů">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&q=80">
+    <meta property="og:type" content="website">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        /* ============================================================
-           Styly aplikace — PicoRecorder Hub
-           ============================================================ */
-
         /* ─── CSS proměnné ─────────────────────────────────────────── */
         :root {
             --bg-dark:          #0b0f17;
@@ -22,31 +24,23 @@
             --inner-card-bg:    #161c2a;
             --border-subtle:    #1e2638;
             --border-highlight: #2a354d;
-
-            --text-primary:   #f3f4f6;
-            --text-secondary: #9ca3af;
-            --text-muted:     #6b7280;
-
-            --accent:       #38bdf8;
-            --accent-hover: #7dd3fc;
-
-            --success: #4ade80;
-            --error:   #f87171;
-
-            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --text-primary:     #f3f4f6;
+            --text-secondary:   #9ca3af;
+            --text-muted:       #6b7280;
+            --accent:           #38bdf8;
+            --accent-hover:     #7dd3fc;
+            --success:          #4ade80;
+            --error:            #f87171;
+            --error-bg:         rgba(248,113,113,0.1);
+            --error-border:     rgba(248,113,113,0.25);
+            --font-family:      'Inter', system-ui, -apple-system, sans-serif;
             --radius-sm: 8px;
             --radius-md: 12px;
             --radius-lg: 16px;
         }
 
-        /* ─── Reset ────────────────────────────────────────────────── */
-        *, *::before, *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        /* ─── Body ─────────────────────────────────────────────────── */
         body {
             background-color: var(--bg-dark);
             background-image:
@@ -66,7 +60,7 @@
         /* ─── Navigace ─────────────────────────────────────────────── */
         .top-nav {
             width: 100%;
-            padding: 1.25rem 2rem;
+            padding: 1rem 2rem;
             display: flex;
             align-items: center;
             border-bottom: 1px solid rgba(255,255,255,0.04);
@@ -78,16 +72,12 @@
         }
 
         .nav-logo {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
         }
-
-        .logo-icon { font-size: 1.4rem; }
-
-        .logo-text { color: var(--text-secondary); }
 
         /* ─── Hlavní kontejner ─────────────────────────────────────── */
         .main-container {
@@ -101,14 +91,30 @@
             background: var(--card-bg);
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-lg);
-            padding: 2.5rem;
+            overflow: hidden;
             width: 100%;
             min-height: 400px;
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7);
             animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
             display: flex;
             flex-direction: column;
+        }
+
+        .card-banner {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+            filter: brightness(0.75);
+        }
+
+        .card-body {
+            padding: 2rem 2.5rem 2.5rem;
+            display: flex;
+            flex-direction: column;
             gap: 1.5rem;
+            flex: 1;
         }
 
         /* ─── Hlavička karty ───────────────────────────────────────── */
@@ -120,12 +126,11 @@
             padding-bottom: 1rem;
         }
 
-        .card-header h2 {
-            font-size: 1.25rem;
-            font-weight: 700;
-        }
+        .card-header h2 { font-size: 1.25rem; font-weight: 700; }
 
-        /* ─── Tlačítko Přidat ──────────────────────────────────────── */
+        .header-actions { display: flex; gap: 0.6rem; align-items: center; }
+
+        /* ─── Tlačítka v hlavičce ──────────────────────────────────── */
         .btn-add {
             background: var(--accent);
             color: #000;
@@ -139,12 +144,138 @@
             transition: background 0.2s ease, transform 0.15s ease;
         }
 
-        .btn-add:hover {
-            background: var(--accent-hover);
-            transform: translateY(-1px);
+        .btn-add:hover { background: var(--accent-hover); transform: translateY(-1px); }
+
+        /* Tlačítko pro režim mazání */
+        .btn-delete-mode {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border-subtle);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-family: var(--font-family);
+            transition: all 0.2s ease;
         }
 
-        /* ─── Formulář ─────────────────────────────────────────────── */
+        .btn-delete-mode:hover {
+            border-color: var(--error);
+            color: var(--error);
+        }
+
+        /* Aktivní stav — mazací režim je zapnutý */
+        .btn-delete-mode.active {
+            background: var(--error-bg);
+            border-color: var(--error-border);
+            color: var(--error);
+        }
+
+        /* ─── Modál (sdílený pro heslo i potvrzení smazání) ────────── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-overlay.hidden { display: none; }
+
+        .modal-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-highlight);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            width: 100%;
+            max-width: 360px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+        }
+
+        .modal-box h3 { font-size: 1.1rem; font-weight: 700; }
+
+        .modal-box p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: -0.5rem;
+            line-height: 1.5;
+        }
+
+        .modal-input {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-subtle);
+            color: #fff;
+            padding: 0.7rem 0.9rem;
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-family: var(--font-family);
+            outline: none;
+            width: 100%;
+            letter-spacing: 0.2em;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .modal-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(56,189,248,0.15);
+        }
+
+        .modal-actions { display: flex; gap: 0.75rem; }
+
+        .btn-modal-confirm {
+            flex: 1;
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 0.65rem;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-family: var(--font-family);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .btn-modal-confirm:hover { background: var(--accent-hover); }
+
+        /* Červená varianta tlačítka pro potvrzení smazání */
+        .btn-modal-confirm.danger {
+            background: var(--error);
+            color: #fff;
+        }
+
+        .btn-modal-confirm.danger:hover { background: #fca5a5; }
+
+        .btn-modal-cancel {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border-subtle);
+            padding: 0.65rem 1rem;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-family);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: border-color 0.2s ease;
+        }
+
+        .btn-modal-cancel:hover { border-color: var(--text-muted); color: var(--text-primary); }
+
+        .modal-error {
+            font-size: 0.82rem;
+            color: var(--error);
+            display: none;
+        }
+
+        .modal-error.visible { display: block; }
+
+        /* ─── Formulář přidání odkazu ──────────────────────────────── */
         .add-form {
             background: var(--inner-card-bg);
             border: 1px solid var(--border-highlight);
@@ -163,17 +294,13 @@
             to   { opacity: 1; transform: translateY(0); }
         }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.4rem;
-        }
+        .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
 
         .form-group label {
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             font-weight: 600;
             color: var(--text-secondary);
-            letter-spacing: 0.03em;
+            letter-spacing: 0.04em;
             text-transform: uppercase;
         }
 
@@ -192,17 +319,12 @@
 
         .form-group input:focus {
             border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+            box-shadow: 0 0 0 3px rgba(56,189,248,0.15);
         }
 
         .form-group input::placeholder { color: var(--text-muted); }
 
-        /* ─── Tlačítka formuláře ───────────────────────────────────── */
-        .form-actions {
-            display: flex;
-            gap: 0.75rem;
-            margin-top: 0.25rem;
-        }
+        .form-actions { display: flex; gap: 0.75rem; margin-top: 0.25rem; }
 
         .btn-submit {
             background: var(--accent);
@@ -218,11 +340,7 @@
         }
 
         .btn-submit:hover:not(:disabled) { background: var(--accent-hover); }
-
-        .btn-submit:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
+        .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .btn-cancel {
             background: transparent;
@@ -236,31 +354,12 @@
             transition: border-color 0.2s ease, color 0.2s ease;
         }
 
-        .btn-cancel:hover {
-            border-color: var(--text-muted);
-            color: var(--text-primary);
-        }
+        .btn-cancel:hover { border-color: var(--text-muted); color: var(--text-primary); }
 
-        /* ─── Zpráva ve formuláři ──────────────────────────────────── */
-        .form-message {
-            font-size: 0.85rem;
-            padding: 0.5rem 0.75rem;
-            border-radius: var(--radius-sm);
-        }
-
+        .form-message { font-size: 0.85rem; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm); }
         .form-message.hidden { display: none; }
-
-        .form-message.success {
-            background: rgba(74, 222, 128, 0.1);
-            color: var(--success);
-            border: 1px solid rgba(74, 222, 128, 0.2);
-        }
-
-        .form-message.error {
-            background: rgba(248, 113, 113, 0.1);
-            color: var(--error);
-            border: 1px solid rgba(248, 113, 113, 0.2);
-        }
+        .form-message.success { background: rgba(74,222,128,0.1); color: var(--success); border: 1px solid rgba(74,222,128,0.2); }
+        .form-message.error   { background: var(--error-bg); color: var(--error); border: 1px solid var(--error-border); }
 
         /* ─── Mřížka odkazů ────────────────────────────────────────── */
         .links-grid {
@@ -281,6 +380,7 @@
             align-items: center;
             gap: 1.1rem;
             transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative; /* pro absolutní pozici tlačítka koše */
         }
 
         .hub-link-card:hover {
@@ -288,6 +388,14 @@
             background: #1c2436;
             transform: translateY(-2px);
             box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        }
+
+        /* Červený rámeček v mazacím režimu po najetí myší */
+        .delete-mode .hub-link-card:hover {
+            border-color: var(--error);
+            background: rgba(248,113,113,0.05);
+            transform: none;
+            box-shadow: none;
         }
 
         .link-icon-bg {
@@ -302,18 +410,12 @@
             flex-shrink: 0;
         }
 
-        .link-details {
-            display: flex;
-            flex-direction: column;
-            gap: 0.2rem;
-            flex-grow: 1;
-            min-width: 0;
-        }
+        .link-details { display: flex; flex-direction: column; gap: 0.2rem; flex-grow: 1; min-width: 0; }
 
         .link-name {
             font-size: 0.95rem;
             font-weight: 600;
-            color: #ffffff;
+            color: #fff;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -334,9 +436,51 @@
             transition: color 0.2s ease, transform 0.2s ease;
         }
 
-        .hub-link-card:hover .link-arrow {
-            color: var(--accent);
-            transform: translateX(3px);
+        .hub-link-card:hover .link-arrow { color: var(--accent); transform: translateX(3px); }
+
+        /* ─── Tlačítko koše na kartě odkazu ────────────────────────── */
+        .btn-delete-link {
+            display: none; /* ve výchozím stavu skryté */
+            position: absolute;
+            top: 50%;
+            right: 1rem;
+            transform: translateY(-50%);
+            background: var(--error-bg);
+            border: 1px solid var(--error-border);
+            color: var(--error);
+            border-radius: var(--radius-sm);
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease, transform 0.15s ease;
+            flex-shrink: 0;
+        }
+
+        .btn-delete-link:hover {
+            background: rgba(248,113,113,0.25);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        /* Zobraz tlačítko koše pouze v mazacím režimu */
+        .delete-mode .btn-delete-link {
+            display: flex;
+        }
+
+        /* V mazacím režimu skryj šipku (je nahrazena košem) */
+        .delete-mode .link-arrow {
+            display: none;
+        }
+
+        /* V mazacím režimu kliknutí na kartu nevede na odkaz */
+        .delete-mode .hub-link-card {
+            pointer-events: none;
+        }
+
+        .delete-mode .btn-delete-link {
+            pointer-events: auto;
         }
 
         /* ─── Stavové texty ────────────────────────────────────────── */
@@ -352,22 +496,29 @@
             from { opacity: 0; transform: translateY(20px); }
             to   { opacity: 1; transform: translateY(0); }
         }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
 
-        /* ─── Responzivní styly ─────────────────────────────────────── */
+        /* ─── Responzivní ──────────────────────────────────────────── */
         @media (max-width: 768px) {
             .main-container { padding: 1.5rem 1rem; }
-            .hub-card { padding: 1.5rem 1.25rem; }
+            .card-body { padding: 1.5rem 1.25rem; }
             .links-grid { grid-template-columns: 1fr; }
+            .card-banner { height: 130px; }
         }
 
         @media (max-width: 480px) {
-            .logo-text { display: none; }
             .form-actions { flex-direction: column; }
             .btn-submit, .btn-cancel { width: 100%; text-align: center; }
+            .modal-box { margin: 1rem; }
+            .header-actions { gap: 0.4rem; }
+            .btn-delete-mode { font-size: 0.78rem; padding: 0.45rem 0.7rem; }
         }
 
         @media (prefers-reduced-motion: reduce) {
-            *, .hub-link-card, .link-arrow { animation: none !important; transition: none !important; }
+            * { animation: none !important; transition: none !important; }
         }
     </style>
 </head>
@@ -375,61 +526,108 @@
 
     <!-- Navigace -->
     <nav class="top-nav">
-        <div class="nav-logo">
-            <span class="logo-icon">🎙️</span>
-            <span class="logo-text">PicoRecorder Hub</span>
-        </div>
+        <div class="nav-logo">Adam's Hub</div>
     </nav>
+
+    <!-- ═══ MODÁL: Zadání hesla (pro přidávání i mazání) ═════════ -->
+    <div id="passwordModal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <h3 id="modalTitle">🔒 Admin přístup</h3>
+            <p id="modalSubtitle">Zadej heslo pro pokračování.</p>
+            <input
+                type="password"
+                id="passwordInput"
+                class="modal-input"
+                placeholder="••••"
+                maxlength="10"
+                autocomplete="off"
+            >
+            <span id="modalError" class="modal-error">❌ Špatné heslo, zkus to znovu.</span>
+            <div class="modal-actions">
+                <button type="button" id="modalConfirmBtn" class="btn-modal-confirm">Potvrdit</button>
+                <button type="button" id="modalCancelBtn"  class="btn-modal-cancel">Zrušit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ MODÁL: Potvrzení smazání odkazu ══════════════════════ -->
+    <div id="deleteConfirmModal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <h3>🗑️ Smazat odkaz?</h3>
+            <p id="deleteConfirmText">Tato akce je nevratná.</p>
+            <div class="modal-actions">
+                <button type="button" id="deleteConfirmBtn" class="btn-modal-confirm danger">Smazat</button>
+                <button type="button" id="deleteCancelBtn"  class="btn-modal-cancel">Zrušit</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Hlavní obsah -->
     <main class="main-container">
         <div class="hub-card">
 
-            <!-- Hlavička -->
-            <div class="card-header">
-                <h2>Moje Odkazy</h2>
-                <button id="toggleFormBtn" class="btn-add">+ Přidat stránku</button>
-            </div>
+            <!-- Banner -->
+            <img
+                class="card-banner"
+                src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&q=80"
+                alt="Technologický banner"
+                loading="lazy"
+            >
 
-            <!-- Formulář (skrytý ve výchozím stavu) -->
-            <div id="addLinkForm" class="add-form hidden">
-                <div class="form-group">
-                    <label for="linkTitle">Název stránky *</label>
-                    <input type="text" id="linkTitle" placeholder="např. GitHub">
-                </div>
-                <div class="form-group">
-                    <label for="linkUrl">URL adresa *</label>
-                    <input type="url" id="linkUrl" placeholder="https://github.com">
-                </div>
-                <div class="form-group">
-                    <label for="linkDesc">Popis (volitelně)</label>
-                    <input type="text" id="linkDesc" placeholder="např. Moje repozitáře">
-                </div>
-                <div class="form-actions">
-                    <button type="button" id="submitFormBtn" class="btn-submit">Uložit do Firebase</button>
-                    <button type="button" id="cancelFormBtn" class="btn-cancel">Zrušit</button>
-                </div>
-                <p id="formMessage" class="form-message hidden"></p>
-            </div>
+            <div class="card-body">
 
-            <!-- Seznam odkazů z Firebase -->
-            <div id="linksContainer" class="links-grid">
-                <p class="loading-text">⏳ Načítám odkazy...</p>
-            </div>
+                <!-- Hlavička -->
+                <div class="card-header">
+                    <h2>Přehled odkazů</h2>
+                    <div class="header-actions">
+                        <!-- Tlačítko pro zapnutí mazacího režimu -->
+                        <button id="deleteModeBtn" class="btn-delete-mode">🗑️ Mazat</button>
+                        <!-- Tlačítko pro přidání odkazu -->
+                        <button id="toggleFormBtn" class="btn-add">+ Přidat stránku</button>
+                    </div>
+                </div>
 
+                <!-- Formulář přidání (skrytý do zadání hesla) -->
+                <div id="addLinkForm" class="add-form hidden">
+                    <div class="form-group">
+                        <label for="linkTitle">Název stránky *</label>
+                        <input type="text" id="linkTitle" placeholder="např. GitHub">
+                    </div>
+                    <div class="form-group">
+                        <label for="linkUrl">URL adresa *</label>
+                        <input type="url" id="linkUrl" placeholder="https://github.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="linkDesc">Popis (volitelně)</label>
+                        <input type="text" id="linkDesc" placeholder="např. Moje repozitáře">
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" id="submitFormBtn" class="btn-submit">Uložit do Firebase</button>
+                        <button type="button" id="cancelFormBtn"  class="btn-cancel">Zrušit</button>
+                    </div>
+                    <p id="formMessage" class="form-message hidden"></p>
+                </div>
+
+                <!-- Seznam odkazů -->
+                <div id="linksContainer" class="links-grid">
+                    <p class="loading-text">⏳ Načítám odkazy...</p>
+                </div>
+
+            </div>
         </div>
     </main>
 
-    <!-- Firebase SDK + veškerá logika aplikace -->
+    <!-- Firebase SDK + logika -->
     <script type="module">
 
-        // ─── Firebase importy ────────────────────────────────────────
-        import { initializeApp }   from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAnalytics }    from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAnalytics }  from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
         import {
             getFirestore,
             collection,
             addDoc,
+            deleteDoc,
+            doc,
             onSnapshot,
             query,
             orderBy
@@ -446,25 +644,49 @@
             measurementId:     "G-3STPN6Z7G5"
         };
 
-        // ─── Inicializace ────────────────────────────────────────────
-        const app = initializeApp(firebaseConfig);
+        const app       = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
-        const db  = getFirestore(app);
+        const db        = getFirestore(app);
+
+        // ─── Konstanty ───────────────────────────────────────────────
+        const ADMIN_PASSWORD = '5876';
+
+        // ─── Stav aplikace ───────────────────────────────────────────
+        let adminUnlocked  = false;  // je admin přihlášen v této session?
+        let deleteModeOn   = false;  // je zapnutý mazací režim?
+        let pendingAction  = null;   // co se má stát po zadání hesla: 'add' nebo 'delete'
+        let pendingDeleteId = null;  // ID dokumentu čekajícího na smazání
+        let pendingDeleteTitle = ''; // název odkazu čekajícího na smazání
 
         // ─── UI elementy ─────────────────────────────────────────────
-        const toggleFormBtn  = document.getElementById('toggleFormBtn');
-        const cancelFormBtn  = document.getElementById('cancelFormBtn');
-        const submitFormBtn  = document.getElementById('submitFormBtn');
-        const addLinkForm    = document.getElementById('addLinkForm');
-        const linksContainer = document.getElementById('linksContainer');
-        const formMessage    = document.getElementById('formMessage');
-        const inputTitle     = document.getElementById('linkTitle');
-        const inputUrl       = document.getElementById('linkUrl');
-        const inputDesc      = document.getElementById('linkDesc');
+        const toggleFormBtn      = document.getElementById('toggleFormBtn');
+        const cancelFormBtn      = document.getElementById('cancelFormBtn');
+        const submitFormBtn      = document.getElementById('submitFormBtn');
+        const deleteModeBtn      = document.getElementById('deleteModeBtn');
+        const addLinkForm        = document.getElementById('addLinkForm');
+        const linksContainer     = document.getElementById('linksContainer');
+        const formMessage        = document.getElementById('formMessage');
+        const inputTitle         = document.getElementById('linkTitle');
+        const inputUrl           = document.getElementById('linkUrl');
+        const inputDesc          = document.getElementById('linkDesc');
+
+        // Modál hesla
+        const passwordModal      = document.getElementById('passwordModal');
+        const passwordInput      = document.getElementById('passwordInput');
+        const modalConfirmBtn    = document.getElementById('modalConfirmBtn');
+        const modalCancelBtn     = document.getElementById('modalCancelBtn');
+        const modalError         = document.getElementById('modalError');
+        const modalTitle         = document.getElementById('modalTitle');
+        const modalSubtitle      = document.getElementById('modalSubtitle');
+
+        // Modál potvrzení smazání
+        const deleteConfirmModal = document.getElementById('deleteConfirmModal');
+        const deleteConfirmBtn   = document.getElementById('deleteConfirmBtn');
+        const deleteCancelBtn    = document.getElementById('deleteCancelBtn');
+        const deleteConfirmText  = document.getElementById('deleteConfirmText');
 
         // ─── Pomocné funkce ──────────────────────────────────────────
 
-        // Ochrana proti XSS — escapuje nebezpečné znaky
         function escapeHtml(str) {
             if (!str) return '';
             return str
@@ -474,58 +696,167 @@
                 .replace(/"/g, "&quot;");
         }
 
-        // Zobrazí zprávu ve formuláři (success / error)
         function showMessage(text, type) {
             formMessage.textContent = text;
             formMessage.className = `form-message ${type}`;
-            setTimeout(() => formMessage.className = 'form-message hidden', 4000);
+            setTimeout(() => { formMessage.className = 'form-message hidden'; }, 4000);
         }
 
-        // Vymaže pole formuláře
         function clearForm() {
             inputTitle.value = '';
             inputUrl.value   = '';
             inputDesc.value  = '';
         }
 
-        // Vytvoří DOM element karty odkazu
-        function createLinkCard(data) {
-            const card = document.createElement('a');
-            card.href      = escapeHtml(data.url);
-            card.target    = '_blank';
-            card.rel       = 'noopener noreferrer';
-            card.className = 'hub-link-card';
-            card.innerHTML = `
-                <div class="link-icon-bg">🔗</div>
-                <div class="link-details">
-                    <span class="link-name">${escapeHtml(data.title)}</span>
-                    ${data.description ? `<span class="link-desc">${escapeHtml(data.description)}</span>` : ''}
-                </div>
-                <span class="link-arrow">➔</span>
-            `;
-            return card;
+        function openForm() {
+            addLinkForm.classList.remove('hidden');
+            toggleFormBtn.textContent = '✕ Zavřít';
+            inputTitle.focus();
         }
 
-        // ─── Zobrazení / skrytí formuláře ────────────────────────────
-        toggleFormBtn.addEventListener('click', () => {
-            const isHidden = addLinkForm.classList.toggle('hidden');
-            toggleFormBtn.textContent = isHidden ? '+ Přidat stránku' : '✕ Zavřít';
-            if (!isHidden) inputTitle.focus();
-        });
-
-        cancelFormBtn.addEventListener('click', () => {
+        function closeForm() {
             addLinkForm.classList.add('hidden');
             toggleFormBtn.textContent = '+ Přidat stránku';
             clearForm();
+        }
+
+        // ─── Mazací režim ────────────────────────────────────────────
+
+        function enableDeleteMode() {
+            deleteModeOn = true;
+            deleteModeBtn.classList.add('active');
+            deleteModeBtn.textContent = '✕ Zrušit mazání';
+            linksContainer.classList.add('delete-mode');
+            closeForm(); // zavři formulář pokud byl otevřený
+        }
+
+        function disableDeleteMode() {
+            deleteModeOn = false;
+            deleteModeBtn.classList.remove('active');
+            deleteModeBtn.textContent = '🗑️ Mazat';
+            linksContainer.classList.remove('delete-mode');
+        }
+
+        // ─── Modál hesla ─────────────────────────────────────────────
+
+        function openPasswordModal(action) {
+            pendingAction = action;
+            // Nastav text modálu podle akce
+            if (action === 'add') {
+                modalTitle.textContent    = '🔒 Admin přístup';
+                modalSubtitle.textContent = 'Zadej heslo pro přidání nového odkazu.';
+            } else if (action === 'delete') {
+                modalTitle.textContent    = '🔒 Admin přístup';
+                modalSubtitle.textContent = 'Zadej heslo pro aktivaci mazacího režimu.';
+            }
+            passwordInput.value = '';
+            modalError.classList.remove('visible');
+            passwordModal.classList.remove('hidden');
+            setTimeout(() => passwordInput.focus(), 100);
+        }
+
+        function closePasswordModal() {
+            passwordModal.classList.add('hidden');
+            passwordInput.value = '';
+            modalError.classList.remove('visible');
+            pendingAction = null;
+        }
+
+        function confirmPassword() {
+            if (passwordInput.value === ADMIN_PASSWORD) {
+                adminUnlocked = true;
+                closePasswordModal();
+                // Proveď akci podle toho, co čekalo
+                if (pendingAction === 'add') {
+                    openForm();
+                } else if (pendingAction === 'delete') {
+                    enableDeleteMode();
+                }
+            } else {
+                modalError.classList.add('visible');
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        }
+
+        passwordInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') confirmPassword();
         });
 
-        // ─── Uložení odkazu do Firebase ──────────────────────────────
+        modalConfirmBtn.addEventListener('click', confirmPassword);
+        modalCancelBtn.addEventListener('click',  closePasswordModal);
+        passwordModal.addEventListener('click', (e) => {
+            if (e.target === passwordModal) closePasswordModal();
+        });
+
+        // ─── Modál potvrzení smazání ─────────────────────────────────
+
+        function openDeleteConfirm(docId, title) {
+            pendingDeleteId    = docId;
+            pendingDeleteTitle = title;
+            deleteConfirmText.textContent = `Opravdu chceš smazat „${title}"? Tato akce je nevratná.`;
+            deleteConfirmModal.classList.remove('hidden');
+        }
+
+        function closeDeleteConfirm() {
+            deleteConfirmModal.classList.add('hidden');
+            pendingDeleteId    = null;
+            pendingDeleteTitle = '';
+        }
+
+        deleteConfirmBtn.addEventListener('click', async () => {
+            if (!pendingDeleteId) return;
+            try {
+                await deleteDoc(doc(db, "links", pendingDeleteId));
+                closeDeleteConfirm();
+            } catch (err) {
+                console.error("Chyba při mazání:", err);
+                alert('❌ Nepodařilo se smazat odkaz. Zkontroluj Firestore pravidla.');
+                closeDeleteConfirm();
+            }
+        });
+
+        deleteCancelBtn.addEventListener('click', closeDeleteConfirm);
+        deleteConfirmModal.addEventListener('click', (e) => {
+            if (e.target === deleteConfirmModal) closeDeleteConfirm();
+        });
+
+        // ─── Tlačítko "Mazat" ────────────────────────────────────────
+        deleteModeBtn.addEventListener('click', () => {
+            if (deleteModeOn) {
+                // Mazací režim je zapnutý → vypni ho
+                disableDeleteMode();
+            } else {
+                // Zapni mazací režim — ověř heslo (pokud ještě není přihlášen)
+                if (adminUnlocked) {
+                    enableDeleteMode();
+                } else {
+                    openPasswordModal('delete');
+                }
+            }
+        });
+
+        // ─── Tlačítko "Přidat stránku" ───────────────────────────────
+        toggleFormBtn.addEventListener('click', () => {
+            if (addLinkForm.classList.contains('hidden')) {
+                if (adminUnlocked) {
+                    openForm();
+                } else {
+                    openPasswordModal('add');
+                }
+            } else {
+                closeForm();
+            }
+        });
+
+        cancelFormBtn.addEventListener('click', closeForm);
+
+        // ─── Uložení odkazu ──────────────────────────────────────────
         submitFormBtn.addEventListener('click', async () => {
             const title = inputTitle.value.trim();
             const url   = inputUrl.value.trim();
             const desc  = inputDesc.value.trim();
 
-            // Validace
             if (!title) {
                 showMessage('⚠️ Zadej název stránky.', 'error');
                 inputTitle.focus();
@@ -537,9 +868,8 @@
                 return;
             }
 
-            // Zablokuj tlačítko během odesílání
-            submitFormBtn.disabled     = true;
-            submitFormBtn.textContent  = 'Ukládám...';
+            submitFormBtn.disabled    = true;
+            submitFormBtn.textContent = 'Ukládám...';
 
             try {
                 await addDoc(collection(db, "links"), {
@@ -551,10 +881,7 @@
 
                 showMessage('✅ Odkaz uložen!', 'success');
                 clearForm();
-                setTimeout(() => {
-                    addLinkForm.classList.add('hidden');
-                    toggleFormBtn.textContent = '+ Přidat stránku';
-                }, 1500);
+                setTimeout(() => closeForm(), 1500);
 
             } catch (err) {
                 console.error(err);
@@ -565,20 +892,57 @@
             }
         });
 
-        // ─── Real-time načítání odkazů z Firestore ───────────────────
+        // ─── Vytvoření karty odkazu ──────────────────────────────────
+        function createLinkCard(docId, data) {
+            const card = document.createElement('a');
+            card.href      = escapeHtml(data.url);
+            card.target    = '_blank';
+            card.rel       = 'noopener noreferrer';
+            card.className = 'hub-link-card';
+            card.dataset.id = docId; // uložíme ID dokumentu pro mazání
+
+            card.innerHTML = `
+                <div class="link-icon-bg">🔗</div>
+                <div class="link-details">
+                    <span class="link-name">${escapeHtml(data.title)}</span>
+                    ${data.description ? `<span class="link-desc">${escapeHtml(data.description)}</span>` : ''}
+                </div>
+                <span class="link-arrow">➔</span>
+                <button class="btn-delete-link" title="Smazat odkaz">🗑️</button>
+            `;
+
+            // Kliknutí na tlačítko koše → otevři potvrzovací dialog
+            card.querySelector('.btn-delete-link').addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                openDeleteConfirm(docId, data.title);
+            });
+
+            return card;
+        }
+
+        // ─── Real-time načítání z Firestore ──────────────────────────
         const q = query(collection(db, "links"), orderBy("createdAt", "desc"));
 
         onSnapshot(q, (snapshot) => {
+            // Zachovej stav mazacího režimu při překreslení
+            const wasDeleteMode = deleteModeOn;
+
             linksContainer.innerHTML = '';
 
             if (snapshot.empty) {
-                linksContainer.innerHTML = '<p class="empty-text">Zatím žádné odkazy. Klikni na „+ Přidat stránku".</p>';
+                linksContainer.innerHTML = '<p class="empty-text">Zatím žádné odkazy. Přidej první!</p>';
                 return;
             }
 
-            snapshot.forEach(doc => {
-                linksContainer.appendChild(createLinkCard(doc.data()));
+            snapshot.forEach(docSnap => {
+                linksContainer.appendChild(createLinkCard(docSnap.id, docSnap.data()));
             });
+
+            // Obnov třídu mazacího režimu po překreslení
+            if (wasDeleteMode) {
+                linksContainer.classList.add('delete-mode');
+            }
 
         }, (err) => {
             console.error(err);
@@ -589,3 +953,5 @@
 
 </body>
 </html>
+ENDOFFILE
+echo "OK"
