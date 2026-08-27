@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PicoRecorder — Audio Recording Hub</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎙️</text></svg>">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="bg-grid"></div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="logo-icon">🎙️</span>
+            </div>
+
+            <!-- Liquid glass tabs -->
+            <div class="tab-bar">
+                <div class="tab-track">
+                    <button class="tab-btn" data-tab="linux" onclick="switchTab('linux')">
+                        <span class="tab-icon">🐧</span>
+                        <span class="tab-label">Linux</span>
+                    </button>
+                    <button class="tab-btn tab-active" data-tab="download" onclick="switchTab('download')">
+                        <span class="tab-icon">⬇️</span>
+                        <span class="tab-label">Stahování</span>
+                    </button>
+                    <button class="tab-btn" data-tab="windows" onclick="switchTab('windows')">
+                        <span class="tab-icon">🪟</span>
+                        <span class="tab-label">Windows</span>
+                    </button>
+                    <div class="tab-indicator" id="tabIndicator"></div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section id="about" class="card">
+            <div class="status-badge">
+                <span class="pulse-dot"></span>
+                <span>PicoRecorder v1.0 Online</span>
+            </div>
+
+            <h1>PicoRecorder Hub</h1>
+            <p class="description">
+                Kompletní systém pro záznam zvuku založený na Raspberry Pi Pico. Obsahuje kód pro mikrokontrolér Pico, sériovou komunikaci, audio engine a desktopovou aplikaci pro Linux i Windows.
+            </p>
+
+            <!-- TAB: Stahování -->
+            <div class="tab-panel active" id="panel-download">
+                <div id="downloads" class="download-section">
+                    <h3>Ke stažení</h3>
+                    <div class="download-grid">
+                        <div class="download-card">
+                            <div class="dl-icon linux-icon">🐧</div>
+                            <div class="dl-info">
+                                <h4>Linux Software</h4>
+                                <p>Kompletní balíček pro Linux obsahující aplikaci, skripty a kód pro Pico.</p>
+                            </div>
+                            <a href="downloads/Linux_Software.zip" download class="btn-download btn-linux">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                                Stáhnout Linux (.zip)
+                            </a>
+                        </div>
+                        <div class="download-card">
+                            <div class="dl-icon win-icon">🪟</div>
+                            <div class="dl-info">
+                                <h4>Windows Software</h4>
+                                <p>Kompletní balíček pro Windows obsahující spouštěcí soubory a kód pro Pico.</p>
+                            </div>
+                            <a href="downloads/Windows_Software.zip" download class="btn-download btn-windows">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                                Stáhnout Windows (.zip)
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: Linux návod -->
+            <div class="tab-panel" id="panel-linux">
+                <div class="manual-os">
+                    <div class="manual-os-header linux-header">
+                        <span>🐧</span>
+                        <span>Návod pro Linux</span>
+                    </div>
+                    <div class="manual-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Otevři terminál a zadej tyto příkazy</h4>
+                            <p>Uprav cestu ke složce <code>Linux</code> podle svého uživatelského jména:</p>
+                            <pre><code>SLOŽKA="/home/TVOJE_JMÉNO/Downloads/Linux"
+
+cat > "$SLOŽKA/PicoRecorder.desktop" &lt;&lt; DESK
+[Desktop Entry]
+Name=Pico Recorder
+Exec=bash -c "cd '$SLOŽKA/app' &amp;&amp; python3 app.py"
+Icon=audio-recorder
+Terminal=false
+Type=Application
+DESK
+
+chmod +x "$SLOŽKA/PicoRecorder.desktop"</code></pre>
+                        </div>
+                    </div>
+                    <div class="manual-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Povol spuštění aplikace</h4>
+                            <p>Ve správci souborů klikni <strong>pravým tlačítkem</strong> na soubor <code>PicoRecorder.desktop</code> → <strong>Allow Launching</strong>.</p>
+                            <p>Poté stačí na soubor <strong>dvakrát kliknout</strong> a aplikace se spustí.</p>
+                        </div>
+                    </div>
+                    <div class="manual-step">
+                        <div class="step-number">★</div>
+                        <div class="step-content">
+                            <h4>Volitelně — ikona na ploše</h4>
+                            <pre><code>cp "$SLOŽKA/PicoRecorder.desktop" ~/Desktop/</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: Windows návod -->
+            <div class="tab-panel" id="panel-windows">
+                <div class="windows-soon">
+                    <div class="soon-icon">🪟</div>
+                    <h3>Návod pro Windows</h3>
+                    <p>Právě připravujeme podrobný návod pro Windows. Brzy tu najdeš vše potřebné pro spuštění PicoRecorderu.</p>
+                    <div class="soon-badge">Připravujeme</div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
